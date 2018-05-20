@@ -1,12 +1,12 @@
 pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
-// 'bitfwd' CROWDSALE token contract
+// 'CRYVAGO' CROWDSALE token contract
 //
 // Deployed to : 0xD0FDf2ECd4CadE671a7EE1063393eC0eB90816FD
-// Symbol      : FWD
-// Name        : bitfwd Token
-// Total supply: Gazillion
+// Symbol      : CRY
+// Name        :CRYVAGO Token
+// Total supply: 5000000000
 // Decimals    : 18
 //
 // Enjoy.
@@ -99,7 +99,7 @@ contract Owned {
 // ERC20 Token, with the addition of symbol, name and decimals and assisted
 // token transfers
 // ----------------------------------------------------------------------------
-contract bitfwdToken is ERC20Interface, Owned, SafeMath {
+contract CRYVAGOToken is ERC20Interface, Owned, SafeMath {
     string public symbol;
     string public  name;
     uint8 public decimals;
@@ -115,9 +115,9 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function bitfwdToken() public {
+    function CRYVAGOToken() public {
         symbol = "FWD";
-        name = "bitfwd Token";
+        name = "CRYVAGO Token";
         decimals = 18;
         bonusEnds = now + 1 weeks;
         endDate = now + 7 weeks;

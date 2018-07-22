@@ -1,17 +1,18 @@
 pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
-// 'bitfwd' CROWDSALE token contract
+// 'JorgeArturo' CROWDSALE token contract
 //
 // Deployed to : 0xD0FDf2ECd4CadE671a7EE1063393eC0eB90816FD
-// Symbol      : FWD
-// Name        : bitfwd Token
-// Total supply: Gazillion
+// Symbol      : JAT
+// Name        : JorgeArturo Token
+// Total supply: 1000000000000
 // Decimals    : 18
 //
 // Enjoy.
 //
 // (c) by Moritz Neto & Daniel Bar with BokkyPooBah / Bok Consulting Pty Ltd Au 2017. The MIT Licence.
+// Forked by JorgeArturo.
 // ----------------------------------------------------------------------------
 
 
@@ -116,8 +117,8 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     // Constructor
     // ------------------------------------------------------------------------
     constructor() public {
-        symbol = "FWD";
-        name = "bitfwd Token";
+        symbol = "JAT";
+        name = "JorgeArturo Token";
         decimals = 18;
         bonusEnds = now + 1 weeks;
         endDate = now + 7 weeks;
@@ -209,15 +210,15 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     }
 
     // ------------------------------------------------------------------------
-    // 1,000 FWD Tokens per 1 ETH
+    // 5,000 FWD Tokens per 1 ETH
     // ------------------------------------------------------------------------
     function () public payable {
         require(now >= startDate && now <= endDate);
         uint tokens;
         if (now <= bonusEnds) {
-            tokens = msg.value * 1200;
+            tokens = msg.value * 5200;
         } else {
-            tokens = msg.value * 1000;
+            tokens = msg.value * 5000;
         }
         balances[msg.sender] = safeAdd(balances[msg.sender], tokens);
         _totalSupply = safeAdd(_totalSupply, tokens);

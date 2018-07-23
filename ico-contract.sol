@@ -100,11 +100,12 @@ contract Owned {
 // ERC20 Token, with the addition of symbol, name and decimals and assisted
 // token transfers
 // ----------------------------------------------------------------------------
-contract bitfwdToken is ERC20Interface, Owned, SafeMath {
+contract jorgeArturoToken is ERC20Interface, Owned, SafeMath {
     string public symbol;
     string public  name;
     uint8 public decimals;
     uint public _totalSupply;
+    uint public totalSold;
     uint public startDate;
     uint public bonusEnds;
     uint public endDate;
@@ -117,11 +118,14 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     // Constructor
     // ------------------------------------------------------------------------
     constructor() public {
-        symbol = "JAT";
-        name = "JorgeArturo Token";
+        symbol = "AAG";
+        name = "JorgeArturo Test Token 8";
         decimals = 18;
         bonusEnds = now + 1 weeks;
         endDate = now + 7 weeks;
+        _totalSupply = 600000000000000000000000000;
+        balances[address(0)]= 40000000000000000000000000;
+        totalSold = balances[address(0)];
 
     }
 
@@ -130,7 +134,7 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     // Total supply
     // ------------------------------------------------------------------------
     function totalSupply() public constant returns (uint) {
-        return _totalSupply  - balances[address(0)];
+        return _totalSupply;
     }
 
 
@@ -213,16 +217,16 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     // 5,000 FWD Tokens per 1 ETH
     // ------------------------------------------------------------------------
     function () public payable {
-        require(now >= startDate && now <= endDate);
+        require(now >= startDate && now <= endDate && totalSold < (totalSupply()-msg.value*52000000) && msg.value<5e18 );
         uint tokens;
         if (now <= bonusEnds) {
-            tokens = msg.value * 5200;
+            tokens = msg.value * 52000000;
         } else {
-            tokens = msg.value * 5000;
+            tokens = msg.value * 52000000;
         }
         balances[msg.sender] = safeAdd(balances[msg.sender], tokens);
-        _totalSupply = safeAdd(_totalSupply, tokens);
         emit Transfer(address(0), msg.sender, tokens);
+        totalSold = totalSold+tokens;
         owner.transfer(msg.value);
     }
 

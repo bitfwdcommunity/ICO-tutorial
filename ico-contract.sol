@@ -118,14 +118,21 @@ contract jorgeArturoToken is ERC20Interface, Owned, SafeMath {
     // Constructor
     // ------------------------------------------------------------------------
     constructor() public {
-        symbol = "AAG";
-        name = "JorgeArturo Test Token 8";
+        symbol = "RT2";
+        name = "Rufi Token 2";
         decimals = 18;
         bonusEnds = now + 1 weeks;
         endDate = now + 7 weeks;
-        _totalSupply = 600000000000000000000000000;
-        balances[address(0)]= 40000000000000000000000000;
-        totalSold = balances[address(0)];
+        _totalSupply = 6e26;
+        
+        //Reserved tokens for Pandorum Founders
+        balances[address(0x092EaB8751CCB99b1C0b87ff816fa6dBd6513Ea5)]=42e24;
+        emit Transfer(address(0), 0x092EaB8751CCB99b1C0b87ff816fa6dBd6513Ea5, 42e24);
+        
+        //Reserved tokens for Merit System
+        balances[address(0)]= 198e24;
+        
+        totalSold = balances[address(0x092EaB8751CCB99b1C0b87ff816fa6dBd6513Ea5)] ;
 
     }
 
@@ -134,7 +141,7 @@ contract jorgeArturoToken is ERC20Interface, Owned, SafeMath {
     // Total supply
     // ------------------------------------------------------------------------
     function totalSupply() public constant returns (uint) {
-        return _totalSupply;
+        return _totalSupply-balances[address(0)];
     }
 
 
@@ -144,7 +151,9 @@ contract jorgeArturoToken is ERC20Interface, Owned, SafeMath {
     function balanceOf(address tokenOwner) public constant returns (uint balance) {
         return balances[tokenOwner];
     }
-
+    function tokensSold() public constant returns(uint){
+        return totalSold;
+    }
 
     // ------------------------------------------------------------------------
     // Transfer the balance from token owner's account to `to` account

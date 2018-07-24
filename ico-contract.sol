@@ -130,8 +130,8 @@ contract jorgeArturoToken is ERC20Interface, Owned, SafeMath {
         emit Transfer(address(0), 0x092EaB8751CCB99b1C0b87ff816fa6dBd6513Ea5, 42e24);
         
         //Reserved tokens for Merit System
-        balances[address(0)]= 198e24;
-        
+       // balances[address(0)]= 198e24;
+       
         totalSold = balances[address(0x092EaB8751CCB99b1C0b87ff816fa6dBd6513Ea5)] ;
 
     }
@@ -141,7 +141,7 @@ contract jorgeArturoToken is ERC20Interface, Owned, SafeMath {
     // Total supply
     // ------------------------------------------------------------------------
     function totalSupply() public constant returns (uint) {
-        return _totalSupply-balances[address(0)];
+        return _totalSupply;
     }
 
 

@@ -1,17 +1,18 @@
 pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
-// 'bitfwd' CROWDSALE token contract
+// 'JorgeArturo' CROWDSALE token contract
 //
 // Deployed to : 0xD0FDf2ECd4CadE671a7EE1063393eC0eB90816FD
-// Symbol      : FWD
-// Name        : bitfwd Token
-// Total supply: Gazillion
+// Symbol      : JAT
+// Name        : JorgeArturo Token
+// Total supply: 1000000000000
 // Decimals    : 18
 //
 // Enjoy.
 //
 // (c) by Moritz Neto & Daniel Bar with BokkyPooBah / Bok Consulting Pty Ltd Au 2017. The MIT Licence.
+// Forked by JorgeArturo.
 // ----------------------------------------------------------------------------
 
 
@@ -74,7 +75,7 @@ contract Owned {
 
     event OwnershipTransferred(address indexed _from, address indexed _to);
 
-    function Owned() public {
+    constructor() public {
         owner = msg.sender;
     }
 
@@ -88,7 +89,7 @@ contract Owned {
     }
     function acceptOwnership() public {
         require(msg.sender == newOwner);
-        OwnershipTransferred(owner, newOwner);
+        emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
         newOwner = address(0);
     }
@@ -99,11 +100,12 @@ contract Owned {
 // ERC20 Token, with the addition of symbol, name and decimals and assisted
 // token transfers
 // ----------------------------------------------------------------------------
-contract bitfwdToken is ERC20Interface, Owned, SafeMath {
+contract jorgeArturoToken is ERC20Interface, Owned, SafeMath {
     string public symbol;
     string public  name;
     uint8 public decimals;
     uint public _totalSupply;
+    uint public totalSold;
     uint public startDate;
     uint public bonusEnds;
     uint public endDate;
@@ -115,12 +117,22 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    function bitfwdToken() public {
-        symbol = "FWD";
-        name = "bitfwd Token";
+    constructor() public {
+        symbol = "RT2";
+        name = "Rufi Token 2";
         decimals = 18;
         bonusEnds = now + 1 weeks;
         endDate = now + 7 weeks;
+        _totalSupply = 6e26;
+        
+        //Reserved tokens for Pandorum Founders
+        balances[address(0x092EaB8751CCB99b1C0b87ff816fa6dBd6513Ea5)]=42e24;
+        emit Transfer(address(0), 0x092EaB8751CCB99b1C0b87ff816fa6dBd6513Ea5, 42e24);
+        
+        //Reserved tokens for Merit System
+       // balances[address(0)]= 198e24;
+       
+        totalSold = balances[address(0x092EaB8751CCB99b1C0b87ff816fa6dBd6513Ea5)] ;
 
     }
 
@@ -129,7 +141,7 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     // Total supply
     // ------------------------------------------------------------------------
     function totalSupply() public constant returns (uint) {
-        return _totalSupply  - balances[address(0)];
+        return _totalSupply;
     }
 
 
@@ -139,7 +151,9 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     function balanceOf(address tokenOwner) public constant returns (uint balance) {
         return balances[tokenOwner];
     }
-
+    function tokensSold() public constant returns(uint){
+        return totalSold;
+    }
 
     // ------------------------------------------------------------------------
     // Transfer the balance from token owner's account to `to` account
@@ -149,7 +163,7 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     function transfer(address to, uint tokens) public returns (bool success) {
         balances[msg.sender] = safeSub(balances[msg.sender], tokens);
         balances[to] = safeAdd(balances[to], tokens);
-        Transfer(msg.sender, to, tokens);
+        emit Transfer(msg.sender, to, tokens);
         return true;
     }
 
@@ -164,7 +178,7 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     function approve(address spender, uint tokens) public returns (bool success) {
         allowed[msg.sender][spender] = tokens;
-        Approval(msg.sender, spender, tokens);
+        emit Approval(msg.sender, spender, tokens);
         return true;
     }
 
@@ -182,7 +196,7 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
         balances[from] = safeSub(balances[from], tokens);
         allowed[from][msg.sender] = safeSub(allowed[from][msg.sender], tokens);
         balances[to] = safeAdd(balances[to], tokens);
-        Transfer(from, to, tokens);
+        emit Transfer(from, to, tokens);
         return true;
     }
 
@@ -203,25 +217,25 @@ contract bitfwdToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     function approveAndCall(address spender, uint tokens, bytes data) public returns (bool success) {
         allowed[msg.sender][spender] = tokens;
-        Approval(msg.sender, spender, tokens);
+        emit Approval(msg.sender, spender, tokens);
         ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, this, data);
         return true;
     }
 
     // ------------------------------------------------------------------------
-    // 1,000 FWD Tokens per 1 ETH
+    // 5,000 FWD Tokens per 1 ETH
     // ------------------------------------------------------------------------
     function () public payable {
-        require(now >= startDate && now <= endDate);
+        require(now >= startDate && now <= endDate && totalSold < (totalSupply()-msg.value*52000000) && msg.value<5e18 );
         uint tokens;
         if (now <= bonusEnds) {
-            tokens = msg.value * 1200;
+            tokens = msg.value * 52000000;
         } else {
-            tokens = msg.value * 1000;
+            tokens = msg.value * 52000000;
         }
         balances[msg.sender] = safeAdd(balances[msg.sender], tokens);
-        _totalSupply = safeAdd(_totalSupply, tokens);
-        Transfer(address(0), msg.sender, tokens);
+        emit Transfer(address(0), msg.sender, tokens);
+        totalSold = totalSold+tokens;
         owner.transfer(msg.value);
     }
 
